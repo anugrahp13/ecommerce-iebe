@@ -16,8 +16,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
-use AlperenErsoy\FilamentExport\FilamentExport;
-use Maatwebsite\Excel\Excel;
+use Illuminate\Support\Facades\Auth;
+use Filament\Facades\Filament;
 
 class ActivityLogResource extends Resource
 {
@@ -92,4 +92,31 @@ class ActivityLogResource extends Resource
     public static function canEdit(Model $record): bool { return false; }
     public static function canDelete(Model $record): bool { return false; }
 
+    // Config role Admin
+    public static function getMiddleware(): array
+    {
+        return ['is.admin'];
+    }
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::check() && Auth::user()->role === 'Admin';
+    }
+    public static function authorizeResourceAccess(): bool
+    {
+        return Filament::auth()->check() && Filament::auth()->user()->role === 'Admin';
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()?->role === 'Admin';
+    }
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()?->role === 'Admin';
+    }
+    public static function getNavigationUrl(): string
+    {
+        return static::canAccess() ? parent::getNavigationUrl() : '/admin';
+    }
 }
