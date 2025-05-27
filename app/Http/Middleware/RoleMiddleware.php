@@ -21,6 +21,7 @@ class RoleMiddleware
         $adminOnlyPaths = [
             'admin/users',
             'admin/categories',
+            'admin/activity-logs',
         ];
     
         foreach ($adminOnlyPaths as $path) {
