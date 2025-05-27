@@ -18,6 +18,7 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use Illuminate\Support\Facades\Auth;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\DatePicker;
 
 class ActivityLogResource extends Resource
 {
@@ -55,6 +56,26 @@ class ActivityLogResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->searchPlaceholder('Cari aktivitas...')
+            ->filters([
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('from_date')
+                            ->label('Dari Tanggal'),
+                        DatePicker::make('to_date')
+                            ->label('Sampai Tanggal'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['from_date'] ?? null,
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date)
+                            )
+                            ->when(
+                                $data['to_date'] ?? null,
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date)
+                            );
+                    })
+            ])
             ->headerActions([
                 FilamentExportHeaderAction::make('export')
                     ->label('Export')
@@ -62,7 +83,7 @@ class ActivityLogResource extends Resource
                     ->disableAdditionalColumns() // Nonaktifkan kolom tambahan
                     ->disableFilterColumns() // Nonaktifkan filter kolom
                     ->disablePreview() // Nonaktifkan preview
-                    ->defaultFormat('xlsx') // Format default
+                    ->defaultFormat('xlsx')
             ])
             ->bulkActions([
                 FilamentExportBulkAction::make('Export')
