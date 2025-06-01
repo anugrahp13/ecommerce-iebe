@@ -51,11 +51,11 @@ class VoucherResource extends Resource
                     ->inputMode('numeric')
                     ->required(),
 
-                DatePicker::make('start_at')
+                Forms\Components\DateTimePicker::make('start_at')
                     ->label('Mulai Berlaku')
                     ->required(),
-
-                DatePicker::make('end_at')
+                
+                Forms\Components\DateTimePicker::make('end_at')
                     ->label('Berakhir')
                     ->required(),
             ]);
@@ -69,8 +69,8 @@ class VoucherResource extends Resource
                 Tables\Columns\TextColumn::make('value')->label('Nilai')->money('IDR', true),
                 Tables\Columns\TextColumn::make('min_purchase')->label('Min. Pembelian')->money('IDR', true),
                 Tables\Columns\TextColumn::make('quota'),
-                Tables\Columns\TextColumn::make('start_at')->date(),
-                Tables\Columns\TextColumn::make('end_at')->date(),
+                Tables\Columns\TextColumn::make('start_at')->dateTime(),
+                Tables\Columns\TextColumn::make('end_at')->dateTime(),
             ])
             ->defaultSort('start_at', 'desc')
             ->filters([
