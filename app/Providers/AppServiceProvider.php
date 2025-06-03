@@ -31,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
         Voucher::observe(VoucherObserver::class);
         Product::observe(ProductObserver::class);
+
     }
 }
