@@ -41,4 +41,25 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariant::class);
     }
+    public function getVariantColorsAttribute(): string
+    {
+        if ($this->variants->isEmpty()) {
+            return '-';
+        }
+
+        $grouped = $this->variants->groupBy('color');
+        
+        $result = $grouped->map(function ($items, $color) {
+            $sizeCounts = $items->groupBy('size')
+                ->map(fn ($sizeItems) => $sizeItems->count())
+                ->sortKeys();
+            
+            $sizeStrings = $sizeCounts->map(fn ($count, $size) => "$size=$count")
+                ->join(', ');
+            
+            return "$color ($sizeStrings)";
+        })->join(', ');
+
+        return $result;
+    }
 }
