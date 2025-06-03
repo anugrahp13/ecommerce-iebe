@@ -21,6 +21,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TableRepeater;
 use App\Models\Category;
 use Illuminate\Support\Str;
+use Filament\Tables\Columns\TextColumn;
 
 class ProductResource extends Resource
 {
@@ -85,10 +86,15 @@ class ProductResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('variants_count')
-                    ->label('Jumlah Varian')
-                    ->counts('variants'), // membutuhkan withCount di query
-                    //->toggleable(), // opsional untuk sembunyikan kolom
+                Tables\Columns\TextColumn::make('variant_colors')
+                    ->label('Warna & Ukuran')
+                    ->formatStateUsing(function ($state, $record) {
+                        return view('filament.components.product-variants', [
+                            'colors' => $record->variants->groupBy('color')
+                        ]);
+                    })
+                    ->html()
+                    ->sortable(),
             ])
             ->filters([
                 //
