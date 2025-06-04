@@ -94,7 +94,7 @@ class ProductResource extends Resource
                         ]);
                     })
                     ->html()
-                    ->sortable(),
+                    ->toggleable(),
             ])
             ->filters([
                 //
