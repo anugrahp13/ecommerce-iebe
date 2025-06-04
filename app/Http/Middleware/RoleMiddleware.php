@@ -23,6 +23,7 @@ class RoleMiddleware
             'admin/categories',
             'admin/activity-logs',
             'admin/vouchers',
+            'admin/discounts',
         ];
     
         foreach ($adminOnlyPaths as $path) {
